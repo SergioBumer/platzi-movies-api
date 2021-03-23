@@ -20,12 +20,8 @@ function wrapErrors(err, req, res, next) {
 }
 
 function errorHandler(err, req, res, next) {
-
     const {
-        output: {
-            statusCode,
-            payload
-        }
+        output: { statusCode, payload },
     } = err;
 
     res.status(err.status || 500);
@@ -35,5 +31,5 @@ function errorHandler(err, req, res, next) {
 module.exports = {
     logErrors,
     errorHandler,
-    wrapErrors
-}
+    wrapErrors,
+};
