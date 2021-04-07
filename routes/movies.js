@@ -1,5 +1,7 @@
 const express = require('express');
 const MoviesService = require('../services/movies');
+const cacheResponse = require('../utils/cacheResponse');
+const { FIVE_MINUTES_IN_SECONDS, SIXTY_MINUTES_IN_SECONDS } = require('../utils/time');
 
 const {
     movieIdSchema,
@@ -7,7 +9,6 @@ const {
     updateMovieSchema,
 } = require('../schemas/movies');
 
-const validationHandler = require('../utils/middlewares/validationHandler');
 const validatorHandler = require('../utils/middlewares/validationHandler');
 
 function moviesApi(app) {
@@ -17,10 +18,10 @@ function moviesApi(app) {
     const moviesService = new MoviesService();
 
     router.get('/', async function(req, res, next) {
+        cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
         const { tags } = req.query;
         try {
             const movies = await moviesService.getMovies({ tags });
-            throw new Error('error getting Movies');
             res.status(200).json({
                 data: movies,
                 message: 'Movies charged',
@@ -34,6 +35,7 @@ function moviesApi(app) {
         '/:movieId',
         validatorHandler({ movieId: movieIdSchema }, 'params'),
         async function(req, res, next) {
+            cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
             const { movieId } = req.params;
             try {
                 const movies = await moviesService.getMovie({

@@ -140,4 +140,18 @@ const moviesMocks = [{
     "ip_address": "179.64.122.88"
 }];
 
-module.exports = { moviesMocks };
+function filteredMovies(gender) {
+    return moviesMocks.filter(movie => movie.gender == gender);
+}
+
+class MoviesServiceMock {
+    async getMovies() {
+        Promise.resolve(moviesMocks);
+    }
+
+    async createMovie() {
+        Promise.resolve(moviesMocks[0]);
+    }
+}
+
+module.exports = { moviesMocks, filteredMovies, MoviesServiceMock };
